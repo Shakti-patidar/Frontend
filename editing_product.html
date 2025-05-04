@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Product</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2 class="mb-4">Edit Product</h2>
+    <form id="edit-product-form">
+      <div class="mb-3">
+        <label class="form-label">Product Name</label>
+        <input type="text" id="product-name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea id="product-description" class="form-control" rows="3"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Price</label>
+        <input type="number" id="product-price" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Discount</label>
+        <input type="number" id="product-discount" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Category</label>
+        <input type="text" id="product-category" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">Update Product</button>
+    </form>
+  </div>
+
+  <script>
+    // Function to fetch product data by ID
+    async function fetchProduct(productId) {
+      const response = await fetch(`http://127.0.0.1:8000/api/products/${productId}/`);
+      const product = await response.json();
+      if (response.ok) {
+        // Populate the form with product data
+        document.getElementById("product-name").value = product.name;
+        document.getElementById("product-description").value = product.description || '';
+        document.getElementById("product-price").value = product.price;
+        document.getElementById("product-discount").value = product.discount || '';
+        document.getElementById("product-category").value = product.category || '';
+      } else {
+        alert('Error fetching product');
+      }
+    }
+
+    // Submit form to update product
+    document.getElementById("edit-product-form").addEventListener("submit", async function(e) {
+      e.preventDefault();  // Prevent default form submission
+
+      const productId = 1;  // Example: You'd get this dynamically, maybe from a URL or context
+      const updatedProduct = {
+        name: document.getElementById("product-name").value,
+        description: document.getElementById("product-description").value,
+        price: document.getElementById("product-price").value,
+        discount: document.getElementById("product-discount").value,
+        category: document.getElementById("product-categories").value,
+      };
+
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/products/${productId}/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedProduct),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert("✅ Product updated successfully!");
+          // Optionally, redirect to the product list or clear the form
+        } else {
+          const errorData = await response.json();
+          alert("❌ Error: " + errorData.error);
+        }
+      } catch (error) {
+        alert("❌ Network error: " + error.message);
+      }
+    });
+
+    // Fetch a product to edit when the page loads
+    fetchProduct(1);  // Example: You can change this dynamically based on the product ID
+  </script>
+</body>
+</html>
