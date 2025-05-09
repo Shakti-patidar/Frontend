@@ -23,7 +23,7 @@
       <div class="col-md-6">
         <div class="card p-4">
           <h2 class="text-center mb-4">Add Product</h2>
-          <form id="product-form">
+          <form id="product-form" enctype="multipart/form-data">
             <!-- Add CSRF token if used with Django -->
             <div class="mb-3">
               <label class="form-label">Product Name</label>
@@ -51,6 +51,10 @@
                 <option value="books">Books</option>
               </select>
             </div>
+            <div class="mb-3">
+              <label class="form-label">Product Image</label>
+              <input type="file" name="image" class="form-control" accept="image/*" required>
+            </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-primary">Add Product</button>
             </div>
@@ -62,21 +66,25 @@
   <script>
     document.getElementById("product-form").addEventListener("submit", async function(e) {
         e.preventDefault();// Stop the default form submit
-        const formData = {
-            name: document.querySelector('input[name="name"]').value,
-            description: document.querySelector('textarea[name="description"]').value,
-            price: document.querySelector('input[name="price"]').value,
-            discount: document.querySelector('input[name="discount"]').value,
-            categories: document.querySelector('select[name="categories"]').value,
-        };
+
+        const formElement = document.getElementById("product-form");
+        const formData = new FormData(formElement);
+        // const formData = {
+        //     name: document.querySelector('input[name="name"]').value,
+        //     description: document.querySelector('textarea[name="description"]').value,
+        //     price: document.querySelector('input[name="price"]').value,
+        //     discount: document.querySelector('input[name="discount"]').value,
+        //     categories: document.querySelector('select[name="categories"]').value,
+        // };
 
         try{
          const response = await fetch("http://127.0.0.1:8000/api/products/", {
             method: "POST",
-            headers: {
-                "Content-Type" : "application/json"
-            },
-            body: JSON.stringify(formData)
+            // headers: {
+            //     "Content-Type" : "application/json"
+            // },
+           // body: JSON.stringify(formData)
+           body: formData // sending formData directly
          });
          
          if(response.ok){

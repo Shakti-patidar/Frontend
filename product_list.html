@@ -52,7 +52,8 @@
                 <p class="text-muted">${product.description || 'No description'}</p>
                 <p class="product-price">₹${product.price}</p>
                 ${product.discount ? `<p class="text-danger">Discount: ${product.discount}%</p>` : ''}
-                <span class="badge bg-primary">${product.category || 'Uncategorized'}</span>
+                <span class="badge bg-primary">${product.categories || 'Uncategorized'}</span>
+                <img src="${product.image}" alt="${product.name}" class="img-fluid mt-2" />
               </div>
             </div>
           `;
